@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple project</title>
+</head>
+<body>
+    <h1>Enter a URL</h1>
+    <form method="POST">
+        <label for="url_input">URL:</label><br>
+        <input type="text" id="url_input" name="url_input" size="50"><br><br>
+        <button type="submit">Accept URL</button>
+    </form>
+
+    <h2>History of Entered URLs:</h2>
+    {% if history %}
+    <ul>
+        {% for url in history %}
+        <li>{{ url }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No URLs entered yet.</p>
+    {% endif %}
+</body>
+</html>

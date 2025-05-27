@@ -10,6 +10,7 @@ pipeline {
     stages {
         stage("commands") {
             steps{
+                sh 'echo check docker'
                 sh 'docker ps'
             }
         }

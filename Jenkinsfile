@@ -1,11 +1,5 @@
 pipeline {
-    agent {
-        node {
-            label 'docker-agent' // Must match the label you set in Jenkins node configuration
-            // You can also specify a custom workspace path on the remote agent if needed:
-            // customWorkspace '/path/to/remote/jenkins/workspace'
-        }
-    }
+    agent any
 
 
     stages {

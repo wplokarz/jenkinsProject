@@ -1,8 +1,10 @@
 pipeline {
     agent {
             docker {
-                image 'docker:24.0.0'         // Use Docker-in-Docker capable image
-                args '-v /var/run/docker.sock:/var/run/docker.sock'
+                image 'docker:dind'         // Use the official Docker-in-Docker image
+                args '--privileged'         // Required for Docker daemon to run inside the container
+                // IMPORTANT: Do NOT mount /var/run/docker.sock from the host
+                // You are running a Docker daemon INSIDE this container.
             }
         }
 

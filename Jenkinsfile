@@ -1,12 +1,11 @@
 pipeline {
     agent {
-            docker {
-                image 'docker:dind'         // Use the official Docker-in-Docker image
-                args '--privileged'         // Required for Docker daemon to run inside the container
-                // IMPORTANT: Do NOT mount /var/run/docker.sock from the host
-                // You are running a Docker daemon INSIDE this container.
-            }
+        node {
+            label 'docker-agent' // Must match the label you set in Jenkins node configuration
+            // You can also specify a custom workspace path on the remote agent if needed:
+            // customWorkspace '/path/to/remote/jenkins/workspace'
         }
+    }
 
 
     stages {

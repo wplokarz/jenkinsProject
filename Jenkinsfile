@@ -1,8 +1,19 @@
 pipeline {
-    agent { label 'docker-enabled' }
+    agent {
+            docker {
+                image 'docker:24.0.0'         // Use Docker-in-Docker capable image
+                args '-v /var/run/docker.sock:/var/run/docker.sock'
+            }
+        }
 
 
     stages {
+        stage("commands") {
+            steps{
+                sh 'docker ps'
+            }
+        }
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/wplokarz/jenkinsProject.git'

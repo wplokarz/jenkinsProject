@@ -1,5 +1,6 @@
 pipeline {
-    agent { docker { image 'python:3.13.3-alpine3.21' } }
+    agent { label 'docker-enabled' }
+
 
     stages {
         stage('Checkout') {

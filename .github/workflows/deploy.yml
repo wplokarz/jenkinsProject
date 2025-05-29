@@ -19,7 +19,7 @@ jobs:
 
     - name: Copy files to EC2
       run: |
-        scp -i private_key.pem -o StrictHostKeyChecking=no -r . ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/app
+        scp -i private_key.pem -o StrictHostKeyChecking=no -r . ec2-user@${{ secrets.EC2_HOST }}:~
 
     - name: Run Docker on EC2
       run: |

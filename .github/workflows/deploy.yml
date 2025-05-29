@@ -1,0 +1,31 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH key
+      run: |
+        echo "${{ secrets.EC2_SSH_KEY }}" > mainuser.pem
+        chmod 600 mainuser.pem
+
+    - name: Copy files to EC2
+      run: |
+        scp -i private_key.pem -o StrictHostKeyChecking=no -r . ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/app
+
+    - name: Run Docker on EC2
+      run: |
+        ssh -i private_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          cd /home/ec2-user/app
+          docker build -t flask-app .
+          docker stop flask-container || true && docker rm flask-container || true
+          docker run -d -p 5000:5000 --name flask-container flask-app
+        EOF

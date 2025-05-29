@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 # Store the history of submitted URLs in a list
 url_history = []
-secret_data = os.getenv("firstdata")
+secret_data = os.getenv("FIRSTDATA")
 print(secret_data)
 
 @app.route('/', methods=['GET', 'POST'])

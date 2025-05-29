@@ -1,9 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
 # Store the history of submitted URLs in a list
 url_history = []
+secret_data = os.getenv("firstdata")
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -13,7 +18,7 @@ def index():
             url_history.append(url)
         print(f"User submitted URL: {url}")
         return redirect(url_for('index'))
-    return render_template('index.html', history=url_history)
+    return render_template('index.html', history=url_history, secret_data=secret_data)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

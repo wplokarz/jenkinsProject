@@ -17,15 +17,29 @@ jobs:
         echo "${{ secrets.EC2_SSH_KEY }}" > mainuser.pem
         chmod 600 mainuser.pem
 
-    - name: Copy files to EC2
+    - name: Clean EC2 and prepare folder
       run: |
-        scp -i mainuser.pem -o StrictHostKeyChecking=no -r . ec2-user@${{ secrets.EC2_HOST }}:~
+        ssh -i mainuser.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          # Stop and remove existing container if it exists
+          docker stop flask-container || true
+          docker rm flask-container || true
 
-    - name: Run Docker on EC2
+          # Remove existing image (optional but cleaner)
+          docker rmi flask-app || true
+
+          # Clean and recreate app directory
+          rm -rf /home/ec2-user/app
+          mkdir -p /home/ec2-user/app
+        EOF
+
+    - name: Copy project files to EC2
+      run: |
+        scp -i mainuser.pem -o StrictHostKeyChecking=no -r . ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/app
+
+    - name: Build and run Docker container
       run: |
         ssh -i mainuser.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
           cd /home/ec2-user/app
           docker build -t flask-app .
-          docker stop flask-container || true && docker rm flask-container || true
-          docker run -d -p 5000:5000 --name flask-container flask-app
+          docker run --env-file .env -d -p 80:5000 --name flask-container flask-app
         EOF
